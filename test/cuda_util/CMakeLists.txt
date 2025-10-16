@@ -1,0 +1,3 @@
+add_executable(cuda_util_test cuda_util_test.cpp)
+target_link_libraries(cuda_util_test PRIVATE cuda_util)
+add_test_suite(cuda_util_test)

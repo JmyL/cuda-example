@@ -11,6 +11,6 @@ cpmaddpackage(
 #   set_target_properties(benchmark PROPERTIES CXX_STANDARD 11)
 # endif()
 
-macro(AddBenchmark target)
+macro(add_benchmark target)
     target_link_libraries(${target} PRIVATE benchmark::benchmark_main)
 endmacro()

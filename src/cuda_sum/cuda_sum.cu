@@ -1,6 +1,6 @@
 #include "cuda_sum.hpp"
 
-#include "cuda_util.hpp"
+#include <cuda_util/cuda_util.hpp>
 
 #include <cstdio>
 #include <cstring>

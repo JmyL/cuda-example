@@ -1,5 +1,7 @@
 CompileFlags:
     Compiler: /usr/local/cuda/bin/nvcc
+    Add:
+        - "-I/home/sungsik/Projects/cuda-example/src"
     Remove:
         - "--options-file"
         # strip CUDA fatbin args

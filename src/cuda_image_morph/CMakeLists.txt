@@ -1,0 +1,3 @@
+add_library(cuda_image_morph cuda_image_morph.cu)
+target_include_directories(cuda_image_morph PUBLIC ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(cuda_image_morph PRIVATE cuda_util)

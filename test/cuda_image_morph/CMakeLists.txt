@@ -1,0 +1,7 @@
+add_executable(cuda_image_morph_test cuda_image_morph_test.cpp)
+target_link_libraries(cuda_image_morph_test PRIVATE cuda_image_morph)
+add_test_suite(cuda_image_morph_test)
+
+add_executable(cuda_image_morph_benchmark cuda_image_morph_benchmark.cpp)
+include(Benchmark)
+add_benchmark(cuda_image_morph_benchmark)

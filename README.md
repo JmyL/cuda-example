@@ -10,6 +10,10 @@ All prerequisites will be installed by nix package manager.
 ## Todos
 
 - [x] Check if how it works when host compiler is clang.
+- [ ] Basics
+    - [ ] 2D kernel
+    - [ ] Atomic variables
+    - [ ] Considering Warp
 - [ ] Debugging using cuda-gdb
 - [ ] Profiling
     - [ ] Nsight Systems
