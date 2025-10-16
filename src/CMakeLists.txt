@@ -1,0 +1,2 @@
+add_subdirectory(cuda_hello)
+add_subdirectory(cuda_sum)

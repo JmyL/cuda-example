@@ -1,0 +1,3 @@
+add_executable(cuda_sum_test cuda_sum_test.cpp)
+target_link_libraries(cuda_sum_test PRIVATE cuda_sum)
+add_test_suite(cuda_sum_test)

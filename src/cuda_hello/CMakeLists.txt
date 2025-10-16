@@ -1,0 +1,1 @@
+add_executable(cuda_hello main.cpp cuda_hello.cu)

@@ -1,0 +1,6 @@
+/.direnv
+/Release/
+/Debug/
+/compile_commands.json
+/.cache
+/Testing/
