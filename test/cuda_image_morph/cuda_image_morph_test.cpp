@@ -40,7 +40,7 @@ std::string print_image(const unsigned char *img, int width, int height,
     return ss.str();
 }
 
-TEST(CudaImageMorph, Dilates5x5) {
+TEST(CudaImageMorph, NaiveDilates5x5) {
     // 5x5 image: center pixel is 1, rest are 0
     unsigned char input[25] = {
         // clang-format off
@@ -63,7 +63,7 @@ TEST(CudaImageMorph, Dilates5x5) {
     unsigned char output[25] = {0};
 
     CudaImageMorph morpher(5, 5, input);
-    morpher.dilate(output);
+    morpher.naive_dilate(output);
 
     EXPECT_THAT(output, ElementsAreArray(expected))
         << "Expected:\n"               //
@@ -72,7 +72,7 @@ TEST(CudaImageMorph, Dilates5x5) {
         << print_image(output, 5, 5);
 }
 
-TEST(CudaImageMorph, Erodes5x5Pattern2) {
+TEST(CudaImageMorph, NaiveErodes5x5Pattern2) {
     // 5x5 image: center pixel is 1, rest are 0
     unsigned char input[25] = {
         // clang-format off
@@ -95,7 +95,7 @@ TEST(CudaImageMorph, Erodes5x5Pattern2) {
     unsigned char output[25] = {0};
 
     CudaImageMorph morpher(5, 5, input);
-    morpher.erode(output);
+    morpher.naive_erode(output);
 
     EXPECT_THAT(output, ElementsAreArray(expected))
         << "Expected:\n"               //
@@ -104,7 +104,7 @@ TEST(CudaImageMorph, Erodes5x5Pattern2) {
         << print_image(output, 5, 5);
 }
 
-TEST(CudaImageMorph, Dilates5x5Efficient) {
+TEST(CudaImageMorph, SharedDilates5x5) {
     // 5x5 image: center pixel is 1, rest are 0
     unsigned char input[25] = {
         // clang-format off
@@ -127,7 +127,7 @@ TEST(CudaImageMorph, Dilates5x5Efficient) {
     unsigned char output[25] = {0};
 
     CudaImageMorph morpher(5, 5, input);
-    morpher.efficient_dilate(output);
+    morpher.shared_dilate(output);
 
     EXPECT_THAT(output, ElementsAreArray(expected))
         << "Expected:\n"               //
@@ -136,7 +136,7 @@ TEST(CudaImageMorph, Dilates5x5Efficient) {
         << print_image(output, 5, 5);
 }
 
-TEST(CudaImageMorph, Erodes5x5Efficient) {
+TEST(CudaImageMorph, SharedErodes5x5) {
     // 5x5 image: center pixel is 1, rest are 0
     unsigned char input[25] = {
         // clang-format off
@@ -159,7 +159,7 @@ TEST(CudaImageMorph, Erodes5x5Efficient) {
     unsigned char output[25] = {0};
 
     CudaImageMorph morpher(5, 5, input);
-    morpher.efficient_erode(output);
+    morpher.shared_erode(output);
 
     EXPECT_THAT(output, ElementsAreArray(expected))
         << "Expected:\n"               //
@@ -168,7 +168,7 @@ TEST(CudaImageMorph, Erodes5x5Efficient) {
         << print_image(output, 5, 5);
 }
 
-TEST(CudaImageMorph, Dialate256x256) {
+TEST(CudaImageMorph, NaiveDialate256x256) {
     // 5x5 image: center pixel is 1, rest are 0
     constexpr auto N = 256;
 
@@ -193,7 +193,7 @@ TEST(CudaImageMorph, Dialate256x256) {
         unsigned char output[N * N] = {0};
 
         CudaImageMorph morpher(N, N, input);
-        morpher.dilate(output);
+        morpher.naive_dilate(output);
 
         ASSERT_THAT(output, ElementsAreArray(expected))
             << "Centered at (" << x << ", " << y << ")\n"
@@ -204,7 +204,7 @@ TEST(CudaImageMorph, Dialate256x256) {
     }
 }
 
-TEST(CudaImageMorph, Erode256x256) {
+TEST(CudaImageMorph, NaiveErode256x256) {
     // 5x5 image: center pixel is 1, rest are 0
     constexpr auto N = 256;
 
@@ -233,7 +233,7 @@ TEST(CudaImageMorph, Erode256x256) {
         unsigned char output[N * N] = {0};
 
         CudaImageMorph morpher(N, N, input);
-        morpher.erode(output);
+        morpher.naive_erode(output);
 
         ASSERT_THAT(output, ElementsAreArray(expected))
             << "Centered at (" << x << ", " << y << ")\n"
@@ -244,7 +244,7 @@ TEST(CudaImageMorph, Erode256x256) {
     }
 }
 
-TEST(CudaImageMorph, Dialate256x256Efficient) {
+TEST(CudaImageMorph, SharedDialate256x256) {
     // 5x5 image: center pixel is 1, rest are 0
     constexpr auto N = 256;
 
@@ -269,7 +269,7 @@ TEST(CudaImageMorph, Dialate256x256Efficient) {
         unsigned char output[N * N] = {0};
 
         CudaImageMorph morpher(N, N, input);
-        morpher.efficient_dilate(output);
+        morpher.shared_dilate(output);
 
         ASSERT_THAT(output, ElementsAreArray(expected))
             << "Centered at (" << x << ", " << y << ")\n"
@@ -280,7 +280,7 @@ TEST(CudaImageMorph, Dialate256x256Efficient) {
     }
 }
 
-TEST(CudaImageMorph, Erode256x256Efficient) {
+TEST(CudaImageMorph, SharedErode256x256) {
     // 5x5 image: center pixel is 1, rest are 0
     constexpr auto N = 256;
 
@@ -309,7 +309,7 @@ TEST(CudaImageMorph, Erode256x256Efficient) {
         unsigned char output[N * N] = {0};
 
         CudaImageMorph morpher(N, N, input);
-        morpher.efficient_erode(output);
+        morpher.shared_erode(output);
 
         ASSERT_THAT(output, ElementsAreArray(expected))
             << "Centered at (" << x << ", " << y << ")\n"

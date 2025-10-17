@@ -11,8 +11,8 @@ All prerequisites will be installed by nix package manager.
 
 - [x] Check if how it works when host compiler is clang.
 - [ ] Basics
-    - [ ] 2D kernel
-    - [ ] Atomic variables
+    - [x] 2D kernel
+    - [x] Atomic clauses on global memory: inter block reduction
     - [ ] Considering Warp
 - [ ] Debugging using cuda-gdb
 - [ ] Profiling

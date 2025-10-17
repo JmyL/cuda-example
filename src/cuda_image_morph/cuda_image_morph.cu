@@ -7,8 +7,9 @@
 
 using namespace util;
 
-__global__ void erode_kernel(const unsigned char *input, unsigned char *output,
-                             int width, int height) {
+__global__ void naive_erode_kernel(const unsigned char *input,
+                                   unsigned char *output, int width,
+                                   int height) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -30,8 +31,9 @@ __global__ void erode_kernel(const unsigned char *input, unsigned char *output,
     output[y * width + x] = min_val;
 }
 
-__global__ void dilate_kernel(const unsigned char *input, unsigned char *output,
-                              int width, int height) {
+__global__ void naive_dilate_kernel(const unsigned char *input,
+                                    unsigned char *output, int width,
+                                    int height) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -53,9 +55,9 @@ __global__ void dilate_kernel(const unsigned char *input, unsigned char *output,
     output[y * width + x] = max_val;
 }
 
-__global__ void efficient_erode_kernel(const unsigned char *input,
-                                       unsigned char *output, int width,
-                                       int height) {
+__global__ void shared_erode_kernel(const unsigned char *input,
+                                    unsigned char *output, int width,
+                                    int height) {
     extern __shared__ unsigned char sdata[];
 
     int sx = threadIdx.x;
@@ -90,9 +92,9 @@ __global__ void efficient_erode_kernel(const unsigned char *input,
     output[y * width + x] = min_val;
 }
 
-__global__ void efficient_dilate_kernel(const unsigned char *input,
-                                        unsigned char *output, int width,
-                                        int height) {
+__global__ void shared_dilate_kernel(const unsigned char *input,
+                                     unsigned char *output, int width,
+                                     int height) {
     extern __shared__ unsigned char sdata[];
 
     int sx = threadIdx.x;
@@ -140,11 +142,11 @@ CudaImageMorph::~CudaImageMorph() {
     cudaFree(d_output);
 }
 
-void CudaImageMorph::erode(unsigned char *output_host) {
+void CudaImageMorph::naive_erode(unsigned char *output_host) {
     dim3 blockDim(16, 16);
     dim3 gridDim(DIV_UP(width, blockDim.x), DIV_UP(height, blockDim.y));
 
-    erode_kernel<<<gridDim, blockDim>>>(d_input, d_output, width, height);
+    naive_erode_kernel<<<gridDim, blockDim>>>(d_input, d_output, width, height);
     checkError(cudaGetLastError());
 
     if (output_host == nullptr) {
@@ -156,11 +158,12 @@ void CudaImageMorph::erode(unsigned char *output_host) {
     checkError(cudaGetLastError());
 }
 
-void CudaImageMorph::dilate(unsigned char *output_host) {
+void CudaImageMorph::naive_dilate(unsigned char *output_host) {
     dim3 blockDim(16, 16);
     dim3 gridDim(DIV_UP(width, blockDim.x), DIV_UP(height, blockDim.y));
 
-    dilate_kernel<<<gridDim, blockDim>>>(d_input, d_output, width, height);
+    naive_dilate_kernel<<<gridDim, blockDim>>>(d_input, d_output, width,
+                                               height);
     checkError(cudaGetLastError());
 
     if (output_host == nullptr) {
@@ -172,11 +175,11 @@ void CudaImageMorph::dilate(unsigned char *output_host) {
     checkError(cudaGetLastError());
 }
 
-void CudaImageMorph::efficient_erode(unsigned char *output_host) {
+void CudaImageMorph::shared_erode(unsigned char *output_host) {
     dim3 blockDim(16, 16);
     dim3 gridDim(DIV_UP(width, blockDim.x - 2), DIV_UP(height, blockDim.y - 2));
 
-    efficient_erode_kernel<<<gridDim, blockDim, blockDim.x * blockDim.y>>>(
+    shared_erode_kernel<<<gridDim, blockDim, blockDim.x * blockDim.y>>>(
         d_input, d_output, width, height);
     checkError(cudaGetLastError());
 
@@ -189,11 +192,11 @@ void CudaImageMorph::efficient_erode(unsigned char *output_host) {
     checkError(cudaGetLastError());
 }
 
-void CudaImageMorph::efficient_dilate(unsigned char *output_host) {
+void CudaImageMorph::shared_dilate(unsigned char *output_host) {
     dim3 blockDim(16, 16);
     dim3 gridDim(DIV_UP(width, blockDim.x - 2), DIV_UP(height, blockDim.y - 2));
 
-    efficient_dilate_kernel<<<gridDim, blockDim, blockDim.x * blockDim.y>>>(
+    shared_dilate_kernel<<<gridDim, blockDim, blockDim.x * blockDim.y>>>(
         d_input, d_output, width, height);
     checkError(cudaGetLastError());
 
